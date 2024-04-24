@@ -1,1 +1,1 @@
-let () = Ledger.Src.test_print ()
+let () = Ledger.Src.main ()

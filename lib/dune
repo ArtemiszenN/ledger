@@ -1,2 +1,5 @@
 (library
- (name ledger))
+ (name ledger)
+ (libraries core str core_unix.command_unix yojson)
+ (preprocess
+  (pps ppx_jane)))
