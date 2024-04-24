@@ -105,17 +105,13 @@ let check usr () =
   Set.iter !users ~f:(fun dest -> process usr dest)
 
 let add usr () =
+  Stdio.print_endline ("Adding user " ^ usr);
   if Bool.equal (complete_match usr username_regex) false then
     failwith "Invalid syntax for username, only alphabetic characters allowed";
   (match Set.mem !users usr with
   | true -> failwith "User already exists"
   | false -> ());
-  Stdio.print_endline ("Adding user " ^ usr);
   users := Set.add !users usr;
-  Stdio.print_endline (Set.sexp_of_m__t (module String) !users |> Sexp.to_string);
-  Stdio.print_endline
-    (Map.sexp_of_m__t (module StringPair) Money.sexp_of_t !transactions
-    |> Sexp.to_string);
   Stdio.print_endline ("Added user " ^ usr)
 
 let delete usr () =
@@ -177,6 +173,16 @@ let command =
 
 open Core
 
+let create_data_if_not_exist () =
+  if
+    Poly.equal (Sys_unix.file_exists data_path) `No
+    || Poly.equal (Sys_unix.file_exists data_path) `Unknown
+  then (
+    let oc = Stdio.Out_channel.create data_path in
+    Stdio.Out_channel.output_string oc "";
+    Stdio.Out_channel.flush oc;
+    Stdio.Out_channel.close oc)
+
 let load () =
   let buf = In_channel.read_all data_path in
   if String.compare buf "" > 0 then (
@@ -211,6 +217,7 @@ let save () =
   Yojson.Basic.to_file data_path savefile
 
 let main () =
+  create_data_if_not_exist ();
   load ();
   Command_unix.run ~version:"1.0" command;
   save ()
