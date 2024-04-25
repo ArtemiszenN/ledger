@@ -188,8 +188,6 @@ let command =
       ("delete", delete_command);
     ]
 
-open Core
-
 let create_data_if_not_exist () =
   if
     Poly.equal (Sys_unix.file_exists data_path) `No
@@ -201,7 +199,7 @@ let create_data_if_not_exist () =
     Stdio.Out_channel.close oc)
 
 let load () =
-  let buf = In_channel.read_all data_path in
+  let buf = Core.In_channel.read_all data_path in
   if String.compare buf "" > 0 then (
     let json = Yojson.Basic.from_string buf in
     let users_json =
@@ -212,12 +210,12 @@ let load () =
       |> Yojson.Basic.Util.member "transactions"
       |> Yojson.Basic.Util.to_string
     in
-    users := Set.m__t_of_sexp (module String) (users_json |> Sexp.of_string);
+    users := Set.m__t_of_sexp (module String) (users_json |> Core.Sexp.of_string);
     transactions :=
       Map.m__t_of_sexp
         (module StringPair)
         Money.t_of_sexp
-        (transactions_json |> Sexp.of_string))
+        (transactions_json |> Core.Sexp.of_string))
 
 let save () =
   let savefile =
@@ -236,5 +234,5 @@ let save () =
 let main () =
   create_data_if_not_exist ();
   load ();
-  Command_unix.run ~version:"1.0" command;
+  Command_unix.run ~version:"1.000000001" command;
   save ()
