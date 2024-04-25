@@ -28,8 +28,16 @@ module Money = struct
       | true -> String.sub s ~pos:1 ~len:(String.length s - 1)
       | false -> s
     in
-    let flt = str |> rem_first_if_dollar_sign |> Float.of_string in
-    { dollars = Int.of_float flt; cents = Int.of_float (flt *. 100.) % 100 }
+    let ls =
+      str |> rem_first_if_dollar_sign |> String.split_on_chars ~on:[ '.' ]
+    in
+    match List.length ls with
+    | 1 -> { dollars = ls |> List.hd_exn |> Int.of_string; cents = 0 }
+    | _ ->
+        {
+          dollars = ls |> List.hd_exn |> Int.of_string;
+          cents = List.nth_exn ls 1 |> Int.of_string;
+        }
 
   let add a b =
     {
@@ -44,9 +52,13 @@ module Money = struct
     { dollars = totalcents / 100; cents = totalcents % 100 }
 
   let to_string a =
-    Int.to_string a.dollars ^ " dollars and " ^ Int.to_string a.cents ^ " cents"
+    if a.cents > 0 then
+      Int.to_string a.dollars ^ " dollars and " ^ Int.to_string a.cents
+      ^ " cents"
+    else Int.to_string a.dollars ^ " dollars"
 
-  let gt a b = if compare a b >= 0 then true else false
+  let gt a b = compare a b > 0
+  let equal a b = compare a b = 0
 end
 
 let users = ref (Set.empty (module String))
@@ -91,17 +103,22 @@ let check usr () =
   let process src dest =
     match String.equal src dest with
     | true -> ()
-    | false ->
+    | false -> (
         let owes = find_transaction src dest in
         let owed = find_transaction dest src in
-        if Money.gt owes owed then
-          Stdio.print_endline
-            (src ^ " owes " ^ dest ^ " " ^ Money.to_string (Money.sub owes owed))
-        else
-          Stdio.print_endline
-            (src ^ " is owed " ^ dest ^ " "
-            ^ Money.to_string (Money.sub owed owes))
+        match Money.equal owes owed with
+        | true -> ()
+        | false ->
+            if Money.gt owes owed then
+              Stdio.print_endline
+                (src ^ " owes " ^ dest ^ " "
+                ^ Money.to_string (Money.sub owes owed))
+            else
+              Stdio.print_endline
+                (src ^ " is owed " ^ dest ^ " "
+                ^ Money.to_string (Money.sub owed owes)))
   in
+
   Set.iter !users ~f:(fun dest -> process usr dest)
 
 let add usr () =
