@@ -2,12 +2,18 @@ open Core
 
 type t = { dollars : int; cents : int } [@@deriving sexp]
 
+let is_valid_money_string str =
+  Bool.equal (String.is_empty str) false
+  && Regex.complete_match str Regex.money_regex
+
 let compare a b =
   match Int.compare a.dollars b.dollars with
   | 0 -> Int.compare a.cents b.cents
   | x -> x
 
 let create str =
+  if Bool.equal (is_valid_money_string str) false then
+    failwith "Invalid syntax for inputting money.";
   let rem_first_if_dollar_sign s =
     match Char.equal s.[0] '$' with
     | true -> String.sub s ~pos:1 ~len:(String.length s - 1)

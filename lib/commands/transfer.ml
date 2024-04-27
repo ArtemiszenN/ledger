@@ -2,8 +2,6 @@ open Core
 
 let transfer amt src dest () =
   if String.equal src dest then failwith "That literally does nothing :bully:";
-  if Bool.equal (Regex.complete_match amt Regex.transfer_regex) false then
-    failwith "Invalid syntax for amount specified";
   let users_json, transactions_json = Tracker.transfer amt src dest in
   Fileio.save_from_string users_json transactions_json;
   Stdio.print_endline ("Transferred " ^ amt ^ " from " ^ src ^ " to " ^ dest)

@@ -3,5 +3,5 @@ let complete_match str regex =
   let eq = String.equal (Str.matched_string str) str in
   result && eq
 
-let transfer_regex = Str.regexp {|\$?[0-9]*\(\.[0-9][0-9]\)?|}
+let money_regex = Str.regexp {|\$?[0-9]*\(\.[0-9][0-9]\)?|}
 let username_regex = Str.regexp {|[a-zA-Z]*|}
