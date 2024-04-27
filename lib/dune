@@ -1,3 +1,5 @@
+(include_subdirs unqualified)
+
 (library
  (name ledger)
  (libraries core str core_unix.command_unix yojson)

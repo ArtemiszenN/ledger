@@ -8,8 +8,14 @@ val load :
       Money.t,
       Stringpair.StringPair.comparator_witness )
     Base.Map.t
+[@@deprecated "Overexposed module, use save_from_string instead"]
+
+val load_str : unit -> string * string
 
 val save :
   (Base.String.t, 'a) Base.Set.t ->
   (Stringpair.StringPair.t, Money.t, 'b) Base.Map.t ->
   unit
+[@@deprecated "Overexposed module, use save_from_string instead"]
+
+val save_from_string : string -> string -> unit
