@@ -31,22 +31,24 @@ let load () =
         Money.t_of_sexp
         (transactions_json |> Core.Sexp.of_string) )
   else (Set.empty (module String), Map.empty (module StringPair))
-[@@deprecated "Overexposed module, use save_from_string instead"]
+[@@deprecated "Overexposed module, use load_str instead"]
 
 let load_str () =
-  let buf = Core.In_channel.read_all data_path in
-  if String.compare buf "" > 0 then
-    let json = Yojson.Basic.from_string buf in
-    let users_json =
-      json |> Yojson.Basic.Util.member "users" |> Yojson.Basic.Util.to_string
-    in
-    let transactions_json =
-      json
-      |> Yojson.Basic.Util.member "transactions"
-      |> Yojson.Basic.Util.to_string
-    in
-    (users_json, transactions_json)
-  else ("()", "()")
+  try
+    let buf = Core.In_channel.read_all data_path in
+    if String.compare buf "" > 0 then
+      let json = Yojson.Basic.from_string buf in
+      let users_json =
+        json |> Yojson.Basic.Util.member "users" |> Yojson.Basic.Util.to_string
+      in
+      let transactions_json =
+        json
+        |> Yojson.Basic.Util.member "transactions"
+        |> Yojson.Basic.Util.to_string
+      in
+      (users_json, transactions_json)
+    else ("()", "()")
+  with Sys_error _ -> ("()", "()")
 
 let save users transactions =
   let savefile =

@@ -1,2 +1,6 @@
-(test
- (name test_ledger))
+(library
+ (name test_ledger)
+ (libraries base stdio ledger)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))

@@ -45,5 +45,6 @@ let to_string a =
     Int.to_string a.dollars ^ " dollars and " ^ Int.to_string a.cents ^ " cents"
   else Int.to_string a.dollars ^ " dollars"
 
+let to_cents a = (a.dollars * 100) + a.cents
 let gt a b = compare a b > 0
 let equal a b = compare a b = 0

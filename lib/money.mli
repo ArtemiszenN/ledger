@@ -9,3 +9,4 @@ val sub : t -> t -> t
 val to_string : t -> string
 val gt : t -> t -> bool
 val equal : t -> t -> bool
+val to_cents : t -> int
