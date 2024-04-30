@@ -1,5 +1,15 @@
 open Core
 
+(**
+  Tracks a future transaction of amt from src to dest
+
+  For example, if person A pays for person B's meal, we record a future transaction from B to A since B has to pay A back in the future. 
+  
+  @param amt Amount of money to be transferred. This should be a string which may or may not contain '$' and may or may not contain 2 decimal places 
+  @param src Person who has to transfer money. This should be a string of a user 
+  @param dest Person who is to receive money. This should be a string of a user 
+  @return Returns unit
+*)
 let transfer amt src dest () =
   if String.equal src dest then failwith "That literally does nothing :bully:";
   let users_json, transactions_json = Tracker.transfer amt src dest in

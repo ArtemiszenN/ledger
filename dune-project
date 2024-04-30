@@ -5,20 +5,16 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github ArtemiszenN/ledger))
 
-(authors "Author Name")
+(authors "Artemis")
 
-(maintainers "Maintainer Name")
-
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license idk:sob:)
 
 (package
  (name ledger)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "Tracks who owes who money (and how much)")
+ (description "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
  (depends ocaml dune)
  (tags
   (topics "to describe" your project)))
